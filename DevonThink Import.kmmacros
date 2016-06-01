@@ -14,7 +14,7 @@
 				<array>
 					<dict>
 						<key>ActionName</key>
-						<string>Set Variable ‘args’ to Text ‘%TriggerValue%’ - get name of file to process</string>
+						<string>Set Variable ‘arg’ to Text ‘%TriggerValue%’ - get name of file to process</string>
 						<key>IsDisclosed</key>
 						<false/>
 						<key>MacroActionType</key>
@@ -22,7 +22,7 @@
 						<key>Text</key>
 						<string>%TriggerValue%</string>
 						<key>Variable</key>
-						<string>args</string>
+						<string>arg</string>
 					</dict>
 					<dict>
 						<key>ActionName</key>
@@ -36,7 +36,7 @@
 						<key>MacroActionType</key>
 						<string>ExecuteAppleScript</string>
 						<key>Path</key>
-						<string>/Users/shannon/src/devonPdfImporter/getFileMetadata.applescript</string>
+						<string>/Users/shannon/src/devonPdfImporter/getFileMetadata.scpt</string>
 						<key>Text</key>
 						<string></string>
 						<key>TimeOutAbortsMacro</key>
@@ -274,7 +274,7 @@ InfoValue: %Keywords%</string>
 						<key>Path</key>
 						<string></string>
 						<key>Text</key>
-						<string>echo "/tmp/pdf_$RANDOM"
+						<string>echo "/tmp/$KMVAR_Title.pdf"
 </string>
 						<key>TimeOutAbortsMacro</key>
 						<true/>
@@ -301,8 +301,7 @@ InfoValue: %Keywords%</string>
 						<key>Path</key>
 						<string></string>
 						<key>Text</key>
-						<string>/usr/local/bin/pdftk "$KMVAR_args" update_info "$KMVAR_pdfMetaInfo" output "$KMVAR_tmpPdf"
-mv "$KMVAR_tmpPdf" "$KMVAR_args"</string>
+						<string>/usr/local/bin/pdftk "$KMVAR_arg" update_info "$KMVAR_pdfMetaInfo" output "$KMVAR_tmpPdf"</string>
 						<key>TimeOutAbortsMacro</key>
 						<true/>
 						<key>TrimResults</key>
@@ -324,11 +323,59 @@ mv "$KMVAR_tmpPdf" "$KMVAR_args"</string>
 						<key>Source</key>
 						<string>%pdfMetaInfo%</string>
 					</dict>
+					<dict>
+						<key>ActionName</key>
+						<string>Execute ‘devonPdfImporter.applescript’ AppleScript - add file to DEVONthink</string>
+						<key>DisplayKind</key>
+						<string>None</string>
+						<key>IncludeStdErr</key>
+						<true/>
+						<key>IsDisclosed</key>
+						<false/>
+						<key>MacroActionType</key>
+						<string>ExecuteAppleScript</string>
+						<key>Path</key>
+						<string>/Users/shannon/src/devonPdfImporter/devonPdfImport.scpt</string>
+						<key>Text</key>
+						<string></string>
+						<key>TimeOutAbortsMacro</key>
+						<true/>
+						<key>TrimResults</key>
+						<true/>
+						<key>TrimResultsNew</key>
+						<true/>
+						<key>UseText</key>
+						<false/>
+					</dict>
+					<dict>
+						<key>Destination</key>
+						<string></string>
+						<key>IsDisclosed</key>
+						<false/>
+						<key>MacroActionType</key>
+						<string>File</string>
+						<key>Operation</key>
+						<string>Delete</string>
+						<key>Source</key>
+						<string>%TriggerValue%</string>
+					</dict>
+					<dict>
+						<key>Destination</key>
+						<string></string>
+						<key>IsDisclosed</key>
+						<false/>
+						<key>MacroActionType</key>
+						<string>File</string>
+						<key>Operation</key>
+						<string>Delete</string>
+						<key>Source</key>
+						<string>%tmpPdf%</string>
+					</dict>
 				</array>
 				<key>CreationDate</key>
 				<real>486398216.453807</real>
 				<key>ModificationDate</key>
-				<real>486486579.21169698</real>
+				<real>486499514.596641</real>
 				<key>Name</key>
 				<string>DevonThink Import</string>
 				<key>Triggers</key>
