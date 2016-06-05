@@ -14,41 +14,210 @@
 				<array>
 					<dict>
 						<key>ActionName</key>
-						<string>Set Variable ‘arg’ to Text ‘%TriggerValue%’ - get name of file to process</string>
-						<key>IsDisclosed</key>
-						<false/>
+						<string>Initialise Variables.  ℹedit, the variables, in this group's first &amp; second macros.</string>
+						<key>Actions</key>
+						<array>
+							<dict>
+								<key>ActionColor</key>
+								<string>Red</string>
+								<key>ActionName</key>
+								<string>Set Variable ‘dntp_db’ - database to import PDF into</string>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>SetVariableToText</string>
+								<key>Text</key>
+								<string>PhD</string>
+								<key>Variable</key>
+								<string>dntp_db</string>
+							</dict>
+							<dict>
+								<key>ActionColor</key>
+								<string>Red</string>
+								<key>ActionName</key>
+								<string>Set Variable ‘dntp_group’ - group to import PDF into</string>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>SetVariableToText</string>
+								<key>Text</key>
+								<string>research</string>
+								<key>Variable</key>
+								<string>dntp_group</string>
+							</dict>
+							<dict>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>SetVariableToText</string>
+								<key>Text</key>
+								<string></string>
+								<key>Variable</key>
+								<string>Author</string>
+							</dict>
+							<dict>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>SetVariableToText</string>
+								<key>Text</key>
+								<string></string>
+								<key>Variable</key>
+								<string>Keywords</string>
+							</dict>
+							<dict>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>SetVariableToText</string>
+								<key>Text</key>
+								<string></string>
+								<key>Variable</key>
+								<string>ModDate</string>
+							</dict>
+							<dict>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>SetVariableToText</string>
+								<key>Text</key>
+								<string></string>
+								<key>Variable</key>
+								<string>Subject</string>
+							</dict>
+							<dict>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>SetVariableToText</string>
+								<key>Text</key>
+								<string></string>
+								<key>Variable</key>
+								<string>Title</string>
+							</dict>
+							<dict>
+								<key>ActionColor</key>
+								<string>Teal</string>
+								<key>ActionName</key>
+								<string>Set Variable ‘original_input’ to Text ‘%TriggerValue%’ - get name of file to process</string>
+								<key>MacroActionType</key>
+								<string>SetVariableToText</string>
+								<key>Text</key>
+								<string>%TriggerValue%</string>
+								<key>Variable</key>
+								<string>original_input</string>
+							</dict>
+							<dict>
+								<key>ActionColor</key>
+								<string>Teal</string>
+								<key>ActionName</key>
+								<string>Set Variable ‘pdfPath’ to Text ‘%TriggerValue%’ - get name of file to process</string>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>SetVariableToText</string>
+								<key>Text</key>
+								<string>%TriggerValue%</string>
+								<key>Variable</key>
+								<string>pdfPath</string>
+							</dict>
+						</array>
 						<key>MacroActionType</key>
-						<string>SetVariableToText</string>
-						<key>Text</key>
-						<string>%TriggerValue%</string>
-						<key>Variable</key>
-						<string>arg</string>
+						<string>Group</string>
+						<key>TimeOutAbortsMacro</key>
+						<true/>
 					</dict>
 					<dict>
 						<key>ActionName</key>
-						<string>Execute ‘getFileMetadata.applescript’ AppleScript - get &amp; clean metadata</string>
-						<key>DisplayKind</key>
-						<string>None</string>
-						<key>IncludeStdErr</key>
-						<true/>
-						<key>IsDisclosed</key>
-						<false/>
+						<string>`</string>
+						<key>Actions</key>
+						<array>
+							<dict>
+								<key>ActionColor</key>
+								<string>Orange</string>
+								<key>ActionName</key>
+								<string>Execute Shell Script - get metadata with pdftk→rawMetaData</string>
+								<key>DisplayKind</key>
+								<string>Variable</string>
+								<key>IncludeStdErr</key>
+								<true/>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>ExecuteShellScript</string>
+								<key>Path</key>
+								<string></string>
+								<key>Text</key>
+								<string>#!/bin/bash
+PDFIN="$KMVAR_pdfPath"
+PDFTK=/usr/local/bin/pdftk
+DUMP=$(mktemp "/tmp/pdftk_data_dump_$RANDOM")
+
+$PDFTK "$PDFIN" dump_data output $DUMP
+
+OLDIFS=$IFS
+IFS=$'\n'
+for line in `cat $DUMP`
+do
+   if [[ ${line%%:*} == "InfoKey" ]]
+   then
+      echo ${line##InfoKey: }
+   elif  [[ ${line%%:*} == "InfoValue" ]]
+   then
+      echo ${line##InfoValue: }
+   fi
+done
+IFS=$OLDIFS
+
+rm $DUMP</string>
+								<key>TimeOutAbortsMacro</key>
+								<true/>
+								<key>TrimResults</key>
+								<true/>
+								<key>TrimResultsNew</key>
+								<true/>
+								<key>UseText</key>
+								<true/>
+								<key>Variable</key>
+								<string>rawMetaData</string>
+							</dict>
+							<dict>
+								<key>ActionColor</key>
+								<string>Red</string>
+								<key>ActionName</key>
+								<string>Execute ‘getFileMetadata.applescript’ AppleScript - get &amp; clean metadata</string>
+								<key>DisplayKind</key>
+								<string>None</string>
+								<key>IncludeStdErr</key>
+								<true/>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>ExecuteAppleScript</string>
+								<key>Path</key>
+								<string>/Users/shannon/src/devonPdfImporter/getFileMetadata.applescript</string>
+								<key>Text</key>
+								<string></string>
+								<key>TimeOutAbortsMacro</key>
+								<true/>
+								<key>TrimResults</key>
+								<true/>
+								<key>TrimResultsNew</key>
+								<true/>
+								<key>UseText</key>
+								<false/>
+							</dict>
+						</array>
 						<key>MacroActionType</key>
-						<string>ExecuteAppleScript</string>
-						<key>Path</key>
-						<string>/Users/shannon/src/devonPdfImporter/getFileMetadata.scpt</string>
-						<key>Text</key>
-						<string></string>
+						<string>Group</string>
 						<key>TimeOutAbortsMacro</key>
 						<true/>
-						<key>TrimResults</key>
-						<true/>
-						<key>TrimResultsNew</key>
-						<true/>
-						<key>UseText</key>
-						<false/>
 					</dict>
 					<dict>
+						<key>ActionColor</key>
+						<string>Magenta</string>
+						<key>ActionName</key>
+						<string>Prompt user for metadata edits</string>
 						<key>Buttons</key>
 						<array>
 							<dict>
@@ -67,7 +236,7 @@
 						<key>MacroActionType</key>
 						<string>PromptForUserInput</string>
 						<key>Prompt</key>
-						<string>Please correct problems with the metadata.</string>
+						<string>Please correct problems with the metadata. tt</string>
 						<key>TimeOutAbortsMacro</key>
 						<true/>
 						<key>Title</key>
@@ -76,31 +245,31 @@
 						<array>
 							<dict>
 								<key>Default</key>
-								<string>%Title%</string>
+								<string>%Variable%Title%</string>
 								<key>Variable</key>
 								<string>Title</string>
 							</dict>
 							<dict>
 								<key>Default</key>
-								<string>%Author%</string>
+								<string>%Variable%Author%</string>
 								<key>Variable</key>
 								<string>Author</string>
 							</dict>
 							<dict>
 								<key>Default</key>
-								<string>%Description%</string>
+								<string>%Variable%Subject%</string>
 								<key>Variable</key>
-								<string>Description</string>
+								<string>Subject</string>
 							</dict>
 							<dict>
 								<key>Default</key>
-								<string>%Keywords%</string>
+								<string>%Variable%Keywords%</string>
 								<key>Variable</key>
 								<string>Keywords</string>
 							</dict>
 							<dict>
 								<key>Default</key>
-								<string>0|1</string>
+								<string>1|0</string>
 								<key>Variable</key>
 								<string>Edit in Vim</string>
 							</dict>
@@ -108,135 +277,16 @@
 					</dict>
 					<dict>
 						<key>ActionName</key>
-						<string>Execute Shell Script - generate tmp file name</string>
-						<key>DisplayKind</key>
-						<string>Variable</string>
-						<key>IncludeStdErr</key>
-						<true/>
-						<key>IsDisclosed</key>
-						<false/>
-						<key>MacroActionType</key>
-						<string>ExecuteShellScript</string>
-						<key>Path</key>
-						<string></string>
-						<key>Text</key>
-						<string>echo "/tmp/pdf_meta_info_$RANDOM"
-</string>
-						<key>TimeOutAbortsMacro</key>
-						<true/>
-						<key>TrimResults</key>
-						<true/>
-						<key>TrimResultsNew</key>
-						<true/>
-						<key>UseText</key>
-						<true/>
-						<key>Variable</key>
-						<string>pdfMetaInfo</string>
-					</dict>
-					<dict>
-						<key>ActionName</key>
-						<string>Set modDate variable for metadata update file</string>
-						<key>DisplayKind</key>
-						<string>Variable</string>
-						<key>IncludeStdErr</key>
-						<true/>
-						<key>IsDisclosed</key>
-						<false/>
-						<key>MacroActionType</key>
-						<string>ExecuteShellScript</string>
-						<key>Path</key>
-						<string></string>
-						<key>Text</key>
-						<string>date "+D:%Y%m%d%H%M%S"</string>
-						<key>TimeOutAbortsMacro</key>
-						<true/>
-						<key>TrimResults</key>
-						<true/>
-						<key>TrimResultsNew</key>
-						<true/>
-						<key>UseText</key>
-						<true/>
-						<key>Variable</key>
-						<string>modDate</string>
-					</dict>
-					<dict>
-						<key>ActionName</key>
-						<string>Write pdf metadata update file</string>
-						<key>Append</key>
-						<false/>
-						<key>Destination</key>
-						<string>%pdfMetaInfo%</string>
-						<key>Encoding</key>
-						<string>UTF8</string>
-						<key>Format</key>
-						<string>PlainText</string>
-						<key>Format2</key>
-						<string>PlainText</string>
-						<key>IsDisclosed</key>
-						<false/>
-						<key>MacroActionType</key>
-						<string>WriteFile</string>
-						<key>Name</key>
-						<string>905013D5-06B1-46B4-AFF5-A7B61EC73749</string>
-						<key>RedundandDisplayName</key>
-						<string>Default Clipboard</string>
-						<key>Source</key>
-						<string>Text</string>
-						<key>Text</key>
-						<string>InfoBegin
-InfoKey: ModDate
-InfoValue: %modDate%
-InfoBegin
-InfoKey: Title
-InfoValue: %Title%
-InfoBegin
-InfoKey: Author
-InfoValue: %Author%
-InfoBegin
-InfoKey: Subject
-InfoValue: %Description%
-InfoBegin
-InfoKey: Keywords
-InfoValue: %Keywords%</string>
-						<key>Variable</key>
-						<string>Variable</string>
-					</dict>
-					<dict>
-						<key>ActionName</key>
-						<string>Conditionally edit in vim</string>
-						<key>Conditions</key>
-						<dict>
-							<key>ConditionList</key>
-							<array>
-								<dict>
-									<key>ConditionType</key>
-									<string>Variable</string>
-									<key>Variable</key>
-									<string>Edit in Vim</string>
-									<key>VariableConditionType</key>
-									<string>Is</string>
-									<key>VariableValue</key>
-									<string>1</string>
-								</dict>
-							</array>
-							<key>ConditionListMatch</key>
-							<string>All</string>
-						</dict>
-						<key>ElseActionListDisclosed</key>
-						<false/>
-						<key>ElseActions</key>
-						<array/>
-						<key>IsDisclosed</key>
-						<false/>
-						<key>MacroActionType</key>
-						<string>IfThenElse</string>
-						<key>ThenActions</key>
+						<string>Prepare &amp; perform metadata edits</string>
+						<key>Actions</key>
 						<array>
 							<dict>
+								<key>ActionColor</key>
+								<string>Purple</string>
 								<key>ActionName</key>
-								<string>Execute Shell Script - launch MacVim to edit metadate</string>
+								<string>Execute Shell Script - generate tmp file name</string>
 								<key>DisplayKind</key>
-								<string>Window</string>
+								<string>Variable</string>
 								<key>IncludeStdErr</key>
 								<true/>
 								<key>IsDisclosed</key>
@@ -246,7 +296,196 @@ InfoValue: %Keywords%</string>
 								<key>Path</key>
 								<string></string>
 								<key>Text</key>
-								<string>/usr/local/bin/mvim -f "$KMVAR_pdfMetaInfo"</string>
+								<string>echo "/tmp/pdf_meta_info_$RANDOM"
+</string>
+								<key>TimeOutAbortsMacro</key>
+								<true/>
+								<key>TrimResults</key>
+								<true/>
+								<key>TrimResultsNew</key>
+								<true/>
+								<key>UseText</key>
+								<true/>
+								<key>Variable</key>
+								<string>pdfMetaInfo</string>
+							</dict>
+							<dict>
+								<key>ActionColor</key>
+								<string>Purple</string>
+								<key>ActionName</key>
+								<string>Set modDate variable for metadata update file</string>
+								<key>DisplayKind</key>
+								<string>Variable</string>
+								<key>IncludeStdErr</key>
+								<true/>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>ExecuteShellScript</string>
+								<key>Path</key>
+								<string></string>
+								<key>Text</key>
+								<string>date "+D:%Y%m%d%H%M%S"</string>
+								<key>TimeOutAbortsMacro</key>
+								<true/>
+								<key>TrimResults</key>
+								<true/>
+								<key>TrimResultsNew</key>
+								<true/>
+								<key>UseText</key>
+								<true/>
+								<key>Variable</key>
+								<string>modDate</string>
+							</dict>
+							<dict>
+								<key>ActionColor</key>
+								<string>Green</string>
+								<key>ActionName</key>
+								<string>Write pdf metadata update file</string>
+								<key>Append</key>
+								<false/>
+								<key>Destination</key>
+								<string>%pdfMetaInfo%</string>
+								<key>Encoding</key>
+								<string>UTF8</string>
+								<key>Format</key>
+								<string>PlainText</string>
+								<key>Format2</key>
+								<string>PlainText</string>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>WriteFile</string>
+								<key>Name</key>
+								<string>905013D5-06B1-46B4-AFF5-A7B61EC73749</string>
+								<key>RedundandDisplayName</key>
+								<string>Default Clipboard</string>
+								<key>Source</key>
+								<string>Text</string>
+								<key>Text</key>
+								<string>InfoBegin
+InfoKey: ModDate
+InfoValue: %Variable%modDate%
+InfoBegin
+InfoKey: Title
+InfoValue: %Variable%Title%
+InfoBegin
+InfoKey: Author
+InfoValue: %Variable%Author%
+InfoBegin
+InfoKey: Subject
+InfoValue: %Variable%Subject%
+InfoBegin
+InfoKey: Keywords
+InfoValue: %Variable%Keywords%</string>
+								<key>Variable</key>
+								<string>Variable</string>
+							</dict>
+							<dict>
+								<key>ActionColor</key>
+								<string>Aqua</string>
+								<key>ActionName</key>
+								<string>Conditionally edit in vim</string>
+								<key>Conditions</key>
+								<dict>
+									<key>ConditionList</key>
+									<array>
+										<dict>
+											<key>ConditionType</key>
+											<string>Variable</string>
+											<key>Variable</key>
+											<string>Edit in Vim</string>
+											<key>VariableConditionType</key>
+											<string>Is</string>
+											<key>VariableValue</key>
+											<string>1</string>
+										</dict>
+									</array>
+									<key>ConditionListMatch</key>
+									<string>All</string>
+								</dict>
+								<key>ElseActionListDisclosed</key>
+								<false/>
+								<key>ElseActions</key>
+								<array/>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>IfThenElse</string>
+								<key>ThenActions</key>
+								<array>
+									<dict>
+										<key>ActionName</key>
+										<string>Execute Shell Script - launch MacVim to edit metadate</string>
+										<key>DisplayKind</key>
+										<string>Window</string>
+										<key>IncludeStdErr</key>
+										<true/>
+										<key>IsDisclosed</key>
+										<false/>
+										<key>MacroActionType</key>
+										<string>ExecuteShellScript</string>
+										<key>Path</key>
+										<string></string>
+										<key>Text</key>
+										<string>/usr/local/bin/mvim -f "$KMVAR_pdfMetaInfo"</string>
+										<key>TimeOutAbortsMacro</key>
+										<true/>
+										<key>TrimResults</key>
+										<true/>
+										<key>TrimResultsNew</key>
+										<true/>
+										<key>UseText</key>
+										<true/>
+									</dict>
+								</array>
+								<key>TimeOutAbortsMacro</key>
+								<true/>
+							</dict>
+							<dict>
+								<key>ActionColor</key>
+								<string>Purple</string>
+								<key>ActionName</key>
+								<string>Execute Shell Script - generate tmp file name for output PDF</string>
+								<key>DisplayKind</key>
+								<string>Variable</string>
+								<key>IncludeStdErr</key>
+								<true/>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>ExecuteShellScript</string>
+								<key>Path</key>
+								<string></string>
+								<key>Text</key>
+								<string>echo "/tmp/pdf_import$RANDOM.pdf"
+</string>
+								<key>TimeOutAbortsMacro</key>
+								<true/>
+								<key>TrimResults</key>
+								<true/>
+								<key>TrimResultsNew</key>
+								<true/>
+								<key>UseText</key>
+								<true/>
+								<key>Variable</key>
+								<string>tmpPdf</string>
+							</dict>
+							<dict>
+								<key>ActionColor</key>
+								<string>Yellow</string>
+								<key>ActionName</key>
+								<string>Execute Shell Script - update pdf metadata; saving in tmp file</string>
+								<key>DisplayKind</key>
+								<string>Window</string>
+								<key>IncludeStdErr</key>
+								<true/>
+								<key>MacroActionType</key>
+								<string>ExecuteShellScript</string>
+								<key>Path</key>
+								<string></string>
+								<key>Text</key>
+								<string>/usr/local/bin/pdftk "$KMVAR_original_input" update_info "$KMVAR_pdfMetaInfo" output "$KMVAR_tmpPdf"</string>
 								<key>TimeOutAbortsMacro</key>
 								<true/>
 								<key>TrimResults</key>
@@ -256,126 +495,311 @@ InfoValue: %Keywords%</string>
 								<key>UseText</key>
 								<true/>
 							</dict>
+							<dict>
+								<key>ActionColor</key>
+								<string>Purple</string>
+								<key>Destination</key>
+								<string></string>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>File</string>
+								<key>Operation</key>
+								<string>Delete</string>
+								<key>Source</key>
+								<string>%pdfMetaInfo%</string>
+							</dict>
+						</array>
+						<key>MacroActionType</key>
+						<string>Group</string>
+						<key>TimeOutAbortsMacro</key>
+						<true/>
+					</dict>
+					<dict>
+						<key>ActionName</key>
+						<string>Prepare to recheck title is set.  ℹedit, the path to the script, in this group's third macro.</string>
+						<key>Actions</key>
+						<array>
+							<dict>
+								<key>ActionColor</key>
+								<string>Teal</string>
+								<key>ActionName</key>
+								<string>Set Variable ‘pdfPath’ to Text ‘%TriggerValue%’ - get name of file to process</string>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>SetVariableToText</string>
+								<key>Text</key>
+								<string>%tmpPdf%</string>
+								<key>Variable</key>
+								<string>pdfPath</string>
+							</dict>
+							<dict>
+								<key>ActionColor</key>
+								<string>Orange</string>
+								<key>ActionName</key>
+								<string>Execute Shell Script - save metadata from pdftk to variable→rawMetaData</string>
+								<key>DisplayKind</key>
+								<string>Variable</string>
+								<key>IncludeStdErr</key>
+								<true/>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>ExecuteShellScript</string>
+								<key>Path</key>
+								<string></string>
+								<key>Text</key>
+								<string>#!/bin/bash
+PDFIN="$KMVAR_pdfPath"
+PDFTK=/usr/local/bin/pdftk
+DUMP=$(mktemp "/tmp/pdftk_data_dump_$RANDOM")
+
+$PDFTK "$PDFIN" dump_data output $DUMP
+
+OLDIFS=$IFS
+IFS=$'\n'
+for line in `cat $DUMP`
+do
+   if [[ ${line%%:*} == "InfoKey" ]]
+   then
+      echo ${line##InfoKey: }
+   elif  [[ ${line%%:*} == "InfoValue" ]]
+   then
+      echo ${line##InfoValue: }
+   fi
+done
+IFS=$OLDIFS
+
+rm $DUMP</string>
+								<key>TimeOutAbortsMacro</key>
+								<true/>
+								<key>TrimResults</key>
+								<true/>
+								<key>TrimResultsNew</key>
+								<true/>
+								<key>UseText</key>
+								<true/>
+								<key>Variable</key>
+								<string>rawMetaData</string>
+							</dict>
+							<dict>
+								<key>ActionColor</key>
+								<string>Red</string>
+								<key>ActionName</key>
+								<string>Execute ‘getFileMetadata.applescript’ AppleScript - get &amp; clean metadata</string>
+								<key>DisplayKind</key>
+								<string>None</string>
+								<key>IncludeStdErr</key>
+								<true/>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>ExecuteAppleScript</string>
+								<key>Path</key>
+								<string>/Users/shannon/src/devonPdfImporter/getFileMetadata.applescript</string>
+								<key>Text</key>
+								<string></string>
+								<key>TimeOutAbortsMacro</key>
+								<true/>
+								<key>TrimResults</key>
+								<true/>
+								<key>TrimResultsNew</key>
+								<true/>
+								<key>UseText</key>
+								<false/>
+							</dict>
+						</array>
+						<key>MacroActionType</key>
+						<string>Group</string>
+						<key>TimeOutAbortsMacro</key>
+						<true/>
+					</dict>
+					<dict>
+						<key>ActionName</key>
+						<string>If title is set: rename pdf, import it and clean up.  ℹedit, the path to the script, in this group's third macro.</string>
+						<key>Conditions</key>
+						<dict>
+							<key>ConditionList</key>
+							<array>
+								<dict>
+									<key>ConditionType</key>
+									<string>Variable</string>
+									<key>Variable</key>
+									<string>Title</string>
+									<key>VariableConditionType</key>
+									<string>DoesNotMatch</string>
+									<key>VariableValue</key>
+									<string>None</string>
+								</dict>
+								<dict>
+									<key>ConditionType</key>
+									<string>Variable</string>
+									<key>Variable</key>
+									<string>Title</string>
+									<key>VariableConditionType</key>
+									<string>IsNot</string>
+									<key>VariableValue</key>
+									<string></string>
+								</dict>
+							</array>
+							<key>ConditionListMatch</key>
+							<string>All</string>
+						</dict>
+						<key>ElseActions</key>
+						<array>
+							<dict>
+								<key>ActionName</key>
+								<string>Metadata extraction failed notification</string>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>Notification</string>
+								<key>SoundName</key>
+								<string></string>
+								<key>Subtitle</key>
+								<string>Title is not set</string>
+								<key>Text</key>
+								<string>Title must be set to rename the file; currently set to: %Title%</string>
+								<key>Title</key>
+								<string>002 %ExecutingMacro% failed</string>
+							</dict>
+						</array>
+						<key>MacroActionType</key>
+						<string>IfThenElse</string>
+						<key>ThenActions</key>
+						<array>
+							<dict>
+								<key>ActionColor</key>
+								<string>Teal</string>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>SetVariableToText</string>
+								<key>Text</key>
+								<string>/tmp/%Title%.pdf</string>
+								<key>Variable</key>
+								<string>pdfPath</string>
+							</dict>
+							<dict>
+								<key>Destination</key>
+								<string>%pdfPath%</string>
+								<key>MacroActionType</key>
+								<string>File</string>
+								<key>Operation</key>
+								<string>Move</string>
+								<key>Source</key>
+								<string>%tmpPdf%</string>
+							</dict>
+							<dict>
+								<key>ActionColor</key>
+								<string>Red</string>
+								<key>ActionName</key>
+								<string>Execute ‘devonPdfImporter.applescript’ AppleScript - add file to DEVONthink</string>
+								<key>DisplayKind</key>
+								<string>Variable</string>
+								<key>IncludeStdErr</key>
+								<true/>
+								<key>MacroActionType</key>
+								<string>ExecuteAppleScript</string>
+								<key>Path</key>
+								<string>/Users/shannon/src/devonPdfImporter/devonPdfImport.applescript</string>
+								<key>Text</key>
+								<string></string>
+								<key>TimeOutAbortsMacro</key>
+								<true/>
+								<key>TrimResults</key>
+								<true/>
+								<key>TrimResultsNew</key>
+								<true/>
+								<key>UseText</key>
+								<false/>
+								<key>Variable</key>
+								<string>dntpImprtRes</string>
+							</dict>
+							<dict>
+								<key>Conditions</key>
+								<dict>
+									<key>ConditionList</key>
+									<array>
+										<dict>
+											<key>ConditionType</key>
+											<string>Variable</string>
+											<key>Variable</key>
+											<string>dntpImprtRes</string>
+											<key>VariableConditionType</key>
+											<string>Is</string>
+											<key>VariableValue</key>
+											<string>0</string>
+										</dict>
+									</array>
+									<key>ConditionListMatch</key>
+									<string>All</string>
+								</dict>
+								<key>ElseActions</key>
+								<array>
+									<dict>
+										<key>MacroActionType</key>
+										<string>Notification</string>
+										<key>SoundName</key>
+										<string></string>
+										<key>Subtitle</key>
+										<string>Error code: %Variable%dntpImprtRes%</string>
+										<key>Text</key>
+										<string>1 → DB &amp; Group variables are not set in KM.
+2 → Database %Variable%dntp_db% or group %Variable%dntp_group% could not be found. 
+3 → Something else went wrong 😩</string>
+										<key>Title</key>
+										<string>%ExecutingMacro% - Dntp import failed</string>
+									</dict>
+								</array>
+								<key>MacroActionType</key>
+								<string>IfThenElse</string>
+								<key>ThenActions</key>
+								<array>
+									<dict>
+										<key>DisplayKind</key>
+										<string>Window</string>
+										<key>IncludeStdErr</key>
+										<true/>
+										<key>MacroActionType</key>
+										<string>ExecuteShellScript</string>
+										<key>Path</key>
+										<string></string>
+										<key>Text</key>
+										<string>mv "$KMVAR_original_input" ~/.Trash</string>
+										<key>TimeOutAbortsMacro</key>
+										<true/>
+										<key>TrimResults</key>
+										<true/>
+										<key>TrimResultsNew</key>
+										<true/>
+										<key>UseText</key>
+										<true/>
+									</dict>
+								</array>
+								<key>TimeOutAbortsMacro</key>
+								<true/>
+							</dict>
+							<dict>
+								<key>Destination</key>
+								<string></string>
+								<key>MacroActionType</key>
+								<string>File</string>
+								<key>Operation</key>
+								<string>Delete</string>
+								<key>Source</key>
+								<string>%pdfPath%</string>
+							</dict>
 						</array>
 						<key>TimeOutAbortsMacro</key>
 						<true/>
-					</dict>
-					<dict>
-						<key>ActionName</key>
-						<string>Execute Shell Script - generate tmp file name</string>
-						<key>DisplayKind</key>
-						<string>Variable</string>
-						<key>IncludeStdErr</key>
-						<true/>
-						<key>IsDisclosed</key>
-						<false/>
-						<key>MacroActionType</key>
-						<string>ExecuteShellScript</string>
-						<key>Path</key>
-						<string></string>
-						<key>Text</key>
-						<string>echo "/tmp/$KMVAR_Title.pdf"
-</string>
-						<key>TimeOutAbortsMacro</key>
-						<true/>
-						<key>TrimResults</key>
-						<true/>
-						<key>TrimResultsNew</key>
-						<true/>
-						<key>UseText</key>
-						<true/>
-						<key>Variable</key>
-						<string>tmpPdf</string>
-					</dict>
-					<dict>
-						<key>ActionName</key>
-						<string>Execute Shell Script - update pdf metadata; save in tmp file; mv over original</string>
-						<key>DisplayKind</key>
-						<string>Window</string>
-						<key>IncludeStdErr</key>
-						<true/>
-						<key>IsDisclosed</key>
-						<false/>
-						<key>MacroActionType</key>
-						<string>ExecuteShellScript</string>
-						<key>Path</key>
-						<string></string>
-						<key>Text</key>
-						<string>/usr/local/bin/pdftk "$KMVAR_arg" update_info "$KMVAR_pdfMetaInfo" output "$KMVAR_tmpPdf"</string>
-						<key>TimeOutAbortsMacro</key>
-						<true/>
-						<key>TrimResults</key>
-						<true/>
-						<key>TrimResultsNew</key>
-						<true/>
-						<key>UseText</key>
-						<true/>
-					</dict>
-					<dict>
-						<key>Destination</key>
-						<string></string>
-						<key>IsDisclosed</key>
-						<false/>
-						<key>MacroActionType</key>
-						<string>File</string>
-						<key>Operation</key>
-						<string>Delete</string>
-						<key>Source</key>
-						<string>%pdfMetaInfo%</string>
-					</dict>
-					<dict>
-						<key>ActionName</key>
-						<string>Execute ‘devonPdfImporter.applescript’ AppleScript - add file to DEVONthink</string>
-						<key>DisplayKind</key>
-						<string>None</string>
-						<key>IncludeStdErr</key>
-						<true/>
-						<key>IsDisclosed</key>
-						<false/>
-						<key>MacroActionType</key>
-						<string>ExecuteAppleScript</string>
-						<key>Path</key>
-						<string>/Users/shannon/src/devonPdfImporter/devonPdfImport.scpt</string>
-						<key>Text</key>
-						<string></string>
-						<key>TimeOutAbortsMacro</key>
-						<true/>
-						<key>TrimResults</key>
-						<true/>
-						<key>TrimResultsNew</key>
-						<true/>
-						<key>UseText</key>
-						<false/>
-					</dict>
-					<dict>
-						<key>Destination</key>
-						<string></string>
-						<key>IsDisclosed</key>
-						<false/>
-						<key>MacroActionType</key>
-						<string>File</string>
-						<key>Operation</key>
-						<string>Delete</string>
-						<key>Source</key>
-						<string>%TriggerValue%</string>
-					</dict>
-					<dict>
-						<key>Destination</key>
-						<string></string>
-						<key>IsDisclosed</key>
-						<false/>
-						<key>MacroActionType</key>
-						<string>File</string>
-						<key>Operation</key>
-						<string>Delete</string>
-						<key>Source</key>
-						<string>%tmpPdf%</string>
 					</dict>
 				</array>
 				<key>CreationDate</key>
 				<real>486398216.453807</real>
 				<key>ModificationDate</key>
-				<real>486499514.596641</real>
+				<real>486808077.99916601</real>
 				<key>Name</key>
 				<string>DevonThink Import</string>
 				<key>Triggers</key>
