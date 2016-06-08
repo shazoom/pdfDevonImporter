@@ -24,16 +24,6 @@ on get_DNtp_db_group(mImportDbName, mImportGroupName)
 				set mGroup to mParent
 			end if
 		end repeat
-		--repeat with mDbIdx in databases
-		--	if name of mDbIdx as string = mImportDbName then
-		--		set mDb to mDbIdx
-		--		repeat with mParentIdx in parents of mDb
-		--			if name of mParentIdx as string = mImportGroupName then
-		--				set mGroup to mParentIdx
-		--			end if
-		--		end repeat
-		--	end if
-		--end repeat
 	end tell
 	return mGroup
 end get_DNtp_db_group
