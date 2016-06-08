@@ -46,8 +46,6 @@
 								<string>dntp_group</string>
 							</dict>
 							<dict>
-								<key>IsDisclosed</key>
-								<false/>
 								<key>MacroActionType</key>
 								<string>SetVariableToText</string>
 								<key>Text</key>
@@ -76,8 +74,6 @@
 								<string>ModDate</string>
 							</dict>
 							<dict>
-								<key>IsDisclosed</key>
-								<false/>
 								<key>MacroActionType</key>
 								<string>SetVariableToText</string>
 								<key>Text</key>
@@ -141,12 +137,10 @@
 								<string>Variable</string>
 								<key>IncludeStdErr</key>
 								<true/>
-								<key>IsDisclosed</key>
-								<false/>
 								<key>MacroActionType</key>
 								<string>ExecuteShellScript</string>
 								<key>Path</key>
-								<string></string>
+								<string>/Users/shannon/src/devonPdfImporter/data_dumper.sh</string>
 								<key>Text</key>
 								<string>#!/bin/bash
 PDFIN="$KMVAR_pdfPath"
@@ -161,10 +155,12 @@ for line in `cat $DUMP`
 do
    if [[ ${line%%:*} == "InfoKey" ]]
    then
-      echo ${line##InfoKey: }
+      # echo ${line##InfoKey: }
+      echo ${line##InfoKey: } | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//' -e '/^$/d' -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'
    elif  [[ ${line%%:*} == "InfoValue" ]]
    then
-      echo ${line##InfoValue: }
+      # echo ${line##InfoValue: }
+      echo ${line##InfoValue: } | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//' -e '/^$/d' -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'
    fi
 done
 IFS=$OLDIFS
@@ -177,7 +173,7 @@ rm $DUMP</string>
 								<key>TrimResultsNew</key>
 								<true/>
 								<key>UseText</key>
-								<true/>
+								<false/>
 								<key>Variable</key>
 								<string>rawMetaData</string>
 							</dict>
@@ -190,8 +186,6 @@ rm $DUMP</string>
 								<string>None</string>
 								<key>IncludeStdErr</key>
 								<true/>
-								<key>IsDisclosed</key>
-								<false/>
 								<key>MacroActionType</key>
 								<string>ExecuteAppleScript</string>
 								<key>Path</key>
@@ -214,66 +208,187 @@ rm $DUMP</string>
 						<true/>
 					</dict>
 					<dict>
-						<key>ActionColor</key>
-						<string>Magenta</string>
 						<key>ActionName</key>
-						<string>Prompt user for metadata edits</string>
-						<key>Buttons</key>
+						<string>User input</string>
+						<key>Actions</key>
 						<array>
 							<dict>
-								<key>Button</key>
-								<string>OK</string>
-							</dict>
-							<dict>
-								<key>Button</key>
-								<string>Cancel</string>
-								<key>Cancel</key>
+								<key>ActionColor</key>
+								<string>Magenta</string>
+								<key>ActionName</key>
+								<string>Prompt user for metadata edits</string>
+								<key>Buttons</key>
+								<array>
+									<dict>
+										<key>Button</key>
+										<string>OK</string>
+									</dict>
+									<dict>
+										<key>Button</key>
+										<string>Cancel</string>
+										<key>Cancel</key>
+										<true/>
+									</dict>
+								</array>
+								<key>MacroActionType</key>
+								<string>PromptForUserInput</string>
+								<key>Prompt</key>
+								<string>Please correct problems with the metadata. tt</string>
+								<key>TimeOutAbortsMacro</key>
 								<true/>
+								<key>Title</key>
+								<string>Add PDF to PhD Database</string>
+								<key>Variables</key>
+								<array>
+									<dict>
+										<key>Default</key>
+										<string>%Variable%Title%</string>
+										<key>Variable</key>
+										<string>Title</string>
+									</dict>
+									<dict>
+										<key>Default</key>
+										<string>%Variable%Author%</string>
+										<key>Variable</key>
+										<string>Author</string>
+									</dict>
+									<dict>
+										<key>Default</key>
+										<string>%Variable%Subject%</string>
+										<key>Variable</key>
+										<string>Subject</string>
+									</dict>
+									<dict>
+										<key>Default</key>
+										<string>%Variable%Keywords%</string>
+										<key>Variable</key>
+										<string>Keywords</string>
+									</dict>
+									<dict>
+										<key>Default</key>
+										<string>1|0</string>
+										<key>Variable</key>
+										<string>Edit in Vim</string>
+									</dict>
+								</array>
 							</dict>
-						</array>
-						<key>IsDisclosed</key>
-						<false/>
-						<key>MacroActionType</key>
-						<string>PromptForUserInput</string>
-						<key>Prompt</key>
-						<string>Please correct problems with the metadata. tt</string>
-						<key>TimeOutAbortsMacro</key>
-						<true/>
-						<key>Title</key>
-						<string>Add PDF to PhD Database</string>
-						<key>Variables</key>
-						<array>
 							<dict>
-								<key>Default</key>
-								<string>%Variable%Title%</string>
+								<key>ActionColor</key>
+								<string>Purple</string>
+								<key>ActionName</key>
+								<string>Execute Shell Script - clean user input</string>
+								<key>DisplayKind</key>
+								<string>Variable</string>
+								<key>IncludeStdErr</key>
+								<true/>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>ExecuteShellScript</string>
+								<key>Path</key>
+								<string></string>
+								<key>Text</key>
+								<string>echo "$KMVAR_Title" | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//' -e '/^$/d' -e 's/\n/ /g'  | iconv -c -f utf-8 -t ascii//translit</string>
+								<key>TimeOutAbortsMacro</key>
+								<true/>
+								<key>TrimResults</key>
+								<true/>
+								<key>TrimResultsNew</key>
+								<true/>
+								<key>UseText</key>
+								<true/>
 								<key>Variable</key>
 								<string>Title</string>
 							</dict>
 							<dict>
-								<key>Default</key>
-								<string>%Variable%Author%</string>
+								<key>ActionColor</key>
+								<string>Purple</string>
+								<key>ActionName</key>
+								<string>Execute Shell Script - clean user input</string>
+								<key>DisplayKind</key>
+								<string>Variable</string>
+								<key>IncludeStdErr</key>
+								<true/>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>ExecuteShellScript</string>
+								<key>Path</key>
+								<string></string>
+								<key>Text</key>
+								<string>echo "$KMVAR_Author" | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//' -e '/^$/d' -e 's/\n/ /g' | iconv -c -f utf-8 -t ascii//translit</string>
+								<key>TimeOutAbortsMacro</key>
+								<true/>
+								<key>TrimResults</key>
+								<true/>
+								<key>TrimResultsNew</key>
+								<true/>
+								<key>UseText</key>
+								<true/>
 								<key>Variable</key>
 								<string>Author</string>
 							</dict>
 							<dict>
-								<key>Default</key>
-								<string>%Variable%Subject%</string>
+								<key>ActionColor</key>
+								<string>Purple</string>
+								<key>ActionName</key>
+								<string>Execute Shell Script - clean user input</string>
+								<key>DisplayKind</key>
+								<string>Variable</string>
+								<key>IncludeStdErr</key>
+								<true/>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>ExecuteShellScript</string>
+								<key>Path</key>
+								<string></string>
+								<key>Text</key>
+								<string>echo "$KMVAR_Subject" | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//' -e '/^$/d' -e 's/\n/ /g' | iconv -c -f utf-8 -t ascii//translit</string>
+								<key>TimeOutAbortsMacro</key>
+								<true/>
+								<key>TrimResults</key>
+								<true/>
+								<key>TrimResultsNew</key>
+								<true/>
+								<key>UseText</key>
+								<true/>
 								<key>Variable</key>
 								<string>Subject</string>
 							</dict>
 							<dict>
-								<key>Default</key>
-								<string>%Variable%Keywords%</string>
+								<key>ActionColor</key>
+								<string>Purple</string>
+								<key>ActionName</key>
+								<string>Execute Shell Script - clean user input</string>
+								<key>DisplayKind</key>
+								<string>Variable</string>
+								<key>IncludeStdErr</key>
+								<true/>
+								<key>IsDisclosed</key>
+								<false/>
+								<key>MacroActionType</key>
+								<string>ExecuteShellScript</string>
+								<key>Path</key>
+								<string></string>
+								<key>Text</key>
+								<string>echo "$KMVAR_Keywords" | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//' -e '/^$/d' -e 's/\n/ /g'  | iconv -c -f utf-8 -t ascii//translit</string>
+								<key>TimeOutAbortsMacro</key>
+								<true/>
+								<key>TrimResults</key>
+								<true/>
+								<key>TrimResultsNew</key>
+								<true/>
+								<key>UseText</key>
+								<true/>
 								<key>Variable</key>
 								<string>Keywords</string>
 							</dict>
-							<dict>
-								<key>Default</key>
-								<string>1|0</string>
-								<key>Variable</key>
-								<string>Edit in Vim</string>
-							</dict>
 						</array>
+						<key>MacroActionType</key>
+						<string>Group</string>
+						<key>TimeOutAbortsMacro</key>
+						<true/>
 					</dict>
 					<dict>
 						<key>ActionName</key>
@@ -345,7 +460,7 @@ rm $DUMP</string>
 								<key>Append</key>
 								<false/>
 								<key>Destination</key>
-								<string>%pdfMetaInfo%</string>
+								<string>%Variable%pdfMetaInfo%</string>
 								<key>Encoding</key>
 								<string>UTF8</string>
 								<key>Format</key>
@@ -421,8 +536,6 @@ InfoValue: %Variable%Keywords%</string>
 										<string>Window</string>
 										<key>IncludeStdErr</key>
 										<true/>
-										<key>IsDisclosed</key>
-										<false/>
 										<key>MacroActionType</key>
 										<string>ExecuteShellScript</string>
 										<key>Path</key>
@@ -458,8 +571,7 @@ InfoValue: %Variable%Keywords%</string>
 								<key>Path</key>
 								<string></string>
 								<key>Text</key>
-								<string>echo "/tmp/pdf_import$RANDOM.pdf"
-</string>
+								<string>echo "/tmp/pdf_import$RANDOM.pdf"</string>
 								<key>TimeOutAbortsMacro</key>
 								<true/>
 								<key>TrimResults</key>
@@ -480,6 +592,8 @@ InfoValue: %Variable%Keywords%</string>
 								<string>Window</string>
 								<key>IncludeStdErr</key>
 								<true/>
+								<key>IsDisclosed</key>
+								<false/>
 								<key>MacroActionType</key>
 								<string>ExecuteShellScript</string>
 								<key>Path</key>
@@ -500,8 +614,6 @@ InfoValue: %Variable%Keywords%</string>
 								<string>Purple</string>
 								<key>Destination</key>
 								<string></string>
-								<key>IsDisclosed</key>
-								<false/>
 								<key>MacroActionType</key>
 								<string>File</string>
 								<key>Operation</key>
@@ -510,6 +622,8 @@ InfoValue: %Variable%Keywords%</string>
 								<string>%pdfMetaInfo%</string>
 							</dict>
 						</array>
+						<key>IsDisclosed</key>
+						<false/>
 						<key>MacroActionType</key>
 						<string>Group</string>
 						<key>TimeOutAbortsMacro</key>
@@ -525,12 +639,10 @@ InfoValue: %Variable%Keywords%</string>
 								<string>Teal</string>
 								<key>ActionName</key>
 								<string>Set Variable ‘pdfPath’ to Text ‘%TriggerValue%’ - get name of file to process</string>
-								<key>IsDisclosed</key>
-								<false/>
 								<key>MacroActionType</key>
 								<string>SetVariableToText</string>
 								<key>Text</key>
-								<string>%tmpPdf%</string>
+								<string>%Variable%tmpPdf%</string>
 								<key>Variable</key>
 								<string>pdfPath</string>
 							</dict>
@@ -543,12 +655,10 @@ InfoValue: %Variable%Keywords%</string>
 								<string>Variable</string>
 								<key>IncludeStdErr</key>
 								<true/>
-								<key>IsDisclosed</key>
-								<false/>
 								<key>MacroActionType</key>
 								<string>ExecuteShellScript</string>
 								<key>Path</key>
-								<string></string>
+								<string>/Users/shannon/src/devonPdfImporter/data_dumper.sh</string>
 								<key>Text</key>
 								<string>#!/bin/bash
 PDFIN="$KMVAR_pdfPath"
@@ -563,10 +673,12 @@ for line in `cat $DUMP`
 do
    if [[ ${line%%:*} == "InfoKey" ]]
    then
-      echo ${line##InfoKey: }
+      # echo ${line##InfoKey: }
+      echo ${line##InfoKey: } | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//' -e '/^$/d' -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'
    elif  [[ ${line%%:*} == "InfoValue" ]]
    then
-      echo ${line##InfoValue: }
+      # echo ${line##InfoValue: }
+      echo ${line##InfoValue: } | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//' -e '/^$/d' -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'
    fi
 done
 IFS=$OLDIFS
@@ -579,7 +691,7 @@ rm $DUMP</string>
 								<key>TrimResultsNew</key>
 								<true/>
 								<key>UseText</key>
-								<true/>
+								<false/>
 								<key>Variable</key>
 								<string>rawMetaData</string>
 							</dict>
@@ -592,8 +704,6 @@ rm $DUMP</string>
 								<string>None</string>
 								<key>IncludeStdErr</key>
 								<true/>
-								<key>IsDisclosed</key>
-								<false/>
 								<key>MacroActionType</key>
 								<string>ExecuteAppleScript</string>
 								<key>Path</key>
@@ -651,8 +761,6 @@ rm $DUMP</string>
 							<dict>
 								<key>ActionName</key>
 								<string>Metadata extraction failed notification</string>
-								<key>IsDisclosed</key>
-								<false/>
 								<key>MacroActionType</key>
 								<string>Notification</string>
 								<key>SoundName</key>
@@ -683,13 +791,13 @@ rm $DUMP</string>
 							</dict>
 							<dict>
 								<key>Destination</key>
-								<string>%pdfPath%</string>
+								<string>%Variable%pdfPath%</string>
 								<key>MacroActionType</key>
 								<string>File</string>
 								<key>Operation</key>
 								<string>Move</string>
 								<key>Source</key>
-								<string>%tmpPdf%</string>
+								<string>%Variable%tmpPdf%</string>
 							</dict>
 							<dict>
 								<key>ActionColor</key>
@@ -789,7 +897,7 @@ rm $DUMP</string>
 								<key>Operation</key>
 								<string>Delete</string>
 								<key>Source</key>
-								<string>%pdfPath%</string>
+								<string>%Variable%pdfPath%</string>
 							</dict>
 						</array>
 						<key>TimeOutAbortsMacro</key>
@@ -799,7 +907,7 @@ rm $DUMP</string>
 				<key>CreationDate</key>
 				<real>486398216.453807</real>
 				<key>ModificationDate</key>
-				<real>486808077.99916601</real>
+				<real>487051153.35133803</real>
 				<key>Name</key>
 				<string>DevonThink Import</string>
 				<key>Triggers</key>
